@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ms-pedido
+  name: ms-cliente
 spec:
   selector:
-    app: ms-pedido
+    app: ms-cliente
   type: NodePort
   ports:
   - port: 3000

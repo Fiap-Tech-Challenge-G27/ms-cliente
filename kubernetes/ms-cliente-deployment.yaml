@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ms-pedido
+  name: ms-cliente
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ms-pedido
+      app: ms-cliente
   template:
     metadata:
       labels:
-        app: ms-pedido
+        app: ms-cliente
     spec:
       containers: 
-        - name: ms-pedido
-          image: 851725345801.dkr.ecr.us-east-1.amazonaws.com/ms-pedido:{{VERSION}}
+        - name: ms-cliente
+          image: 851725345801.dkr.ecr.us-east-1.amazonaws.com/ms-cliente:{{VERSION}}
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 3000
