@@ -12,6 +12,10 @@ import { CustomerRepositoryMongoDB } from './infra/mongodb/repositories/customer
 import { ICustomerRepository } from './core/repositories/customer.repository.abstract';
 import { CreateCustomerInteractor } from './app/create-customer/create-customer.interactor';
 import { CustomerMapper } from './core/mappers/customer.mapper';
+import { UpdateCustomerInteractor } from './app/update-customer/update-customer.interactor.ts';
+import { RemoveCustomerInteractor } from './app/remove-customer/remove-customer.interactor';
+import { FindCustomerInteractor } from './app/find-customer/find-customer.interactor';
+import { FindAllCustomersInteractor } from './app/find-all-customers/find-all-customers.interactor';
 
 @Module({
   imports: [
@@ -32,6 +36,10 @@ import { CustomerMapper } from './core/mappers/customer.mapper';
     CustomerService,
     CustomerRepositoryMongoDB,
     CreateCustomerInteractor,
+    UpdateCustomerInteractor,
+    RemoveCustomerInteractor,
+    FindCustomerInteractor,
+    FindAllCustomersInteractor,
     CustomerMapper,
   ],
 })

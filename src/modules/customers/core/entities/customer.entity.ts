@@ -1,10 +1,10 @@
-import { Entity } from 'src/shared/core/entity';
+import { Entity } from '../../../../shared/core/entity';
 
 export interface Customer extends Entity {
   id?: string;
-  name: string;
-  email: string;
-  cpf: string;
+  name?: string;
+  email?: string;
+  cpf?: string;
   createdAt?: Date;
   updatedAt?: Date;
 }

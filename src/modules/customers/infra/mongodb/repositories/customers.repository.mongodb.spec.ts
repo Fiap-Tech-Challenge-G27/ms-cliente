@@ -69,7 +69,7 @@ describe('CustomerRepositoryMongoDB', () => {
   describe('update', () => {
     it('should update a customer and return the transformed entity', async () => {
       const mockId = '1';
-      const mockCustomerDataToUpdate: Partial<Customer> = {
+      const mockCustomerDataToUpdate: Partial<CustomerEntity> = {
         name: 'Updated Name',
       };
 
@@ -126,6 +126,41 @@ describe('CustomerRepositoryMongoDB', () => {
       modelMock.findOne.mockResolvedValue(mockCustomer);
 
       const foundCustomer = await repository.findOne(mockCpf);
+      expect(foundCustomer).toEqual(expectedTransformedCustomer);
+    });
+  });
+
+  describe('findExistingCustomer', () => {
+    it('should find a customer by CPF or e-mail and return the transformed entity', async () => {
+      const mockCreateCustomer = {
+        email: 'john@example.com',
+        cpf: '12345678900',
+      };
+
+      const expectedTransformedCustomer: CustomerEntity = {
+        id: '1',
+        name: 'John Doe',
+        email: 'john@example.com',
+        cpf: '12345678900',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      const mockCustomer = {
+        _id: '1',
+        name: 'John Doe',
+        email: 'john@example.com',
+        cpf: '12345678900',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      modelMock.findOne.mockResolvedValue(mockCustomer);
+
+      const foundCustomer = await repository.findExistingCustomer(
+        mockCreateCustomer.cpf,
+        mockCreateCustomer.email,
+      );
       expect(foundCustomer).toEqual(expectedTransformedCustomer);
     });
   });

@@ -16,9 +16,12 @@ export class CustomerRepositoryMongoDB implements ICustomerRepository {
     return this.transformCustomer(createdCustomer);
   }
 
-  async update(id: string, customer: any): Promise<CustomerEntity> {
-    const updatedCustomer = await this.customerModel.findByIdAndUpdate(
-      id,
+  async update(
+    cpf: string,
+    customer: Partial<CustomerEntity>,
+  ): Promise<CustomerEntity> {
+    const updatedCustomer = await this.customerModel.findOneAndUpdate(
+      { cpf },
       customer,
       { new: true },
     );
@@ -28,6 +31,17 @@ export class CustomerRepositoryMongoDB implements ICustomerRepository {
   async findOne(cpf: string): Promise<CustomerEntity | null> {
     const customer = await this.customerModel.findOne({ cpf });
     return customer ? this.transformCustomer(customer) : null;
+  }
+
+  async findExistingCustomer(
+    cpf: string,
+    email: string,
+  ): Promise<CustomerEntity | null> {
+    const existingCustomer = await this.customerModel.findOne({
+      $or: [{ cpf }, { email }],
+    });
+
+    return existingCustomer ? this.transformCustomer(existingCustomer) : null;
   }
 
   async findAll(): Promise<CustomerEntity[]> {
