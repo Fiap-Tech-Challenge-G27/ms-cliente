@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { ICustomerRepository } from '../../core/repositories/customer.repository.abstract';
-import { Customer, CustomerEntity } from '../../core/entities/customer.entity';
+import { Customer } from '../../core/entities/customer.entity';
 import { CustomerMapper } from '../../core/mappers/customer.mapper';
 import { IExceptionService } from '../../../../shared/exceptions/exceptions.interface';
 import { UpdateCustomerDto } from './update-customer.dto';

@@ -16,7 +16,7 @@ describe('CustomerRepositoryMongoDB', () => {
           provide: getModelToken(Customer.name),
           useValue: {
             create: jest.fn(),
-            findByIdAndUpdate: jest.fn(),
+            findOneAndUpdate: jest.fn(),
             findOne: jest.fn(),
             find: jest.fn(),
             findOneAndDelete: jest.fn(),
@@ -46,8 +46,8 @@ describe('CustomerRepositoryMongoDB', () => {
         name: 'John Doe',
         email: 'john@example.com',
         cpf: '12345678900',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date(2022, 0, 1),
+        updatedAt: new Date(2022, 0, 1),
       };
 
       const expectedTransformedCustomer: CustomerEntity = {
@@ -55,8 +55,8 @@ describe('CustomerRepositoryMongoDB', () => {
         name: 'John Doe',
         email: 'john@example.com',
         cpf: '12345678900',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date(2022, 0, 1),
+        updatedAt: new Date(2022, 0, 1),
       };
 
       modelMock.create.mockResolvedValue(mockCustomer);
@@ -68,8 +68,8 @@ describe('CustomerRepositoryMongoDB', () => {
 
   describe('update', () => {
     it('should update a customer and return the transformed entity', async () => {
-      const mockId = '1';
-      const mockCustomerDataToUpdate: Partial<CustomerEntity> = {
+      const mockCpf = '1';
+      const mockCustomerDataToUpdate = {
         name: 'Updated Name',
       };
 
@@ -78,8 +78,8 @@ describe('CustomerRepositoryMongoDB', () => {
         name: 'Updated Name',
         email: 'john@example.com',
         cpf: '12345678900',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date(2022, 0, 1),
+        updatedAt: new Date(2022, 0, 1),
       };
 
       const mockCustomer = {
@@ -87,14 +87,14 @@ describe('CustomerRepositoryMongoDB', () => {
         name: 'Updated Name',
         email: 'john@example.com',
         cpf: '12345678900',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date(2022, 0, 1),
+        updatedAt: new Date(2022, 0, 1),
       };
 
-      modelMock.findByIdAndUpdate.mockResolvedValue(mockCustomer);
+      modelMock.findOneAndUpdate.mockResolvedValue(mockCustomer);
 
       const updatedCustomer = await repository.update(
-        mockId,
+        mockCpf,
         mockCustomerDataToUpdate,
       );
       expect(updatedCustomer).toEqual(expectedTransformedCustomer);
@@ -110,8 +110,8 @@ describe('CustomerRepositoryMongoDB', () => {
         name: 'John Doe',
         email: 'john@example.com',
         cpf: '12345678900',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date(2022, 0, 1),
+        updatedAt: new Date(2022, 0, 1),
       };
 
       const mockCustomer = {
@@ -119,8 +119,8 @@ describe('CustomerRepositoryMongoDB', () => {
         name: 'John Doe',
         email: 'john@example.com',
         cpf: '12345678900',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date(2022, 0, 1),
+        updatedAt: new Date(2022, 0, 1),
       };
 
       modelMock.findOne.mockResolvedValue(mockCustomer);
@@ -142,8 +142,8 @@ describe('CustomerRepositoryMongoDB', () => {
         name: 'John Doe',
         email: 'john@example.com',
         cpf: '12345678900',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date(2022, 0, 1),
+        updatedAt: new Date(2022, 0, 1),
       };
 
       const mockCustomer = {
@@ -151,8 +151,8 @@ describe('CustomerRepositoryMongoDB', () => {
         name: 'John Doe',
         email: 'john@example.com',
         cpf: '12345678900',
-        createdAt: new Date(),
-        updatedAt: new Date(),
+        createdAt: new Date(2022, 0, 1),
+        updatedAt: new Date(2022, 0, 1),
       };
 
       modelMock.findOne.mockResolvedValue(mockCustomer);
@@ -173,16 +173,16 @@ describe('CustomerRepositoryMongoDB', () => {
           name: 'John Doe',
           email: 'john@example.com',
           cpf: '12345678900',
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: new Date(2022, 0, 1),
+          updatedAt: new Date(2022, 0, 1),
         },
         {
           _id: '2',
           name: 'Jane Smith',
           email: 'jane@example.com',
           cpf: '98765432100',
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: new Date(2022, 0, 1),
+          updatedAt: new Date(2022, 0, 1),
         },
       ];
 
@@ -192,16 +192,16 @@ describe('CustomerRepositoryMongoDB', () => {
           name: 'John Doe',
           email: 'john@example.com',
           cpf: '12345678900',
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: new Date(2022, 0, 1),
+          updatedAt: new Date(2022, 0, 1),
         },
         {
           id: '2',
           name: 'Jane Smith',
           email: 'jane@example.com',
           cpf: '98765432100',
-          createdAt: new Date(),
-          updatedAt: new Date(),
+          createdAt: new Date(2022, 0, 1),
+          updatedAt: new Date(2022, 0, 1),
         },
       ];
 
