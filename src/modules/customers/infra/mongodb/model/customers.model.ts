@@ -1,21 +1,22 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
 
-export interface ICustomer extends Document {
+@Schema()
+export class Customer extends Document {
+  @Prop({ required: true })
   name: string;
+
+  @Prop({ required: true, unique: true })
   email: string;
+
+  @Prop({ required: true, unique: true })
   cpf: string;
+
+  @Prop({ default: Date.now })
   createdAt: Date;
+
+  @Prop({ default: Date.now })
   updatedAt: Date;
 }
 
-const CustomerSchema: Schema = new Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  cpf: { type: String, required: true, unique: true },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
-});
-
-const Customer = mongoose.model<ICustomer>('Customer', CustomerSchema);
-
-export default Customer;
+export const CustomerSchema = SchemaFactory.createForClass(Customer);
