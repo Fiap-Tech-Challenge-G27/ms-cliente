@@ -12,7 +12,8 @@ spec:
       labels:
         app: ms-cliente
     spec:
-      containers: 
+      serviceAccountName: irsasecrets
+      containers:
         - name: ms-cliente
           image: 851725345801.dkr.ecr.us-east-1.amazonaws.com/ms-cliente:{{VERSION}}
           imagePullPolicy: IfNotPresent
@@ -20,7 +21,7 @@ spec:
             - containerPort: 3000
           resources:
             limits:
-              memory: "124Mi"
+              memory: "256Mi"
               cpu: "0.25"
           livenessProbe:
             httpGet:
@@ -28,4 +29,63 @@ spec:
               port: 3000
             initialDelaySeconds: 60
             periodSeconds: 10
+          volumeMounts:
+          - name: secrets-store-inline
+            mountPath: "/mnt/secrets-store"
+            readOnly: true
+          env:
+            - name: DATABASE_DIALECT
+              value: 'mongodb'
+            - name: MONGO_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: documentdbcredentials  # Nome do Kubernetes Secret onde os segredos estão armazenados
+                  key: endpoint  # Chave do segredo correspondente no AWS Secrets Manager
+            - name: MONGO_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: documentdbcredentials
+                  key: port
+            - name: MONGO_USER
+              valueFrom:
+                secretKeyRef:
+                  name: documentdbcredentials
+                  key: username
+            - name: MONGO_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: documentdbcredentials
+                  key: password
+            - name: MONGO_URL
+              valueFrom:
+                secretKeyRef:
+                  name: documentdbcredentials
+                  key: url
+      volumes:
+        - name: secrets-store-inline
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: "aws-secrets"  # O nome do seu SecretProviderClass
       restartPolicy: Always
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: ms-cliente
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: ms-cliente
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 80
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: irsasecrets
+  annotations:
+    eks.amazonaws.com/role-arn: "arn:aws:iam::851725345801:role/roleNodeSecrets"
