@@ -79,7 +79,7 @@ jobs:
           
       - name: Deploy to AWS EKS
         run: |
-          kubectl apply -f kubernetes/secretproviderclass.yml
+          kubectl apply -f kubernetes/secretproviderclass.yaml
           kubectl apply -f kubernetes/ms-cliente-deployment.yaml
           kubectl apply -f kubernetes/ms-cliente-service.yml
 
