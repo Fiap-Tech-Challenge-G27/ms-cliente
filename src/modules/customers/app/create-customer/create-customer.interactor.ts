@@ -4,6 +4,7 @@ import { CreateCustomerDto } from './create-customer.dto';
 import { Customer } from '../../core/entities/customer.entity';
 import { CustomerMapper } from '../../core/mappers/customer.mapper';
 import { IExceptionService } from '../../../../shared/exceptions/exceptions.interface';
+import { validateOrReject } from 'class-validator';
 
 @Injectable()
 export class CreateCustomerInteractor {
@@ -15,18 +16,21 @@ export class CreateCustomerInteractor {
   ) {}
 
   async execute(dto: CreateCustomerDto): Promise<Customer> {
-    const { cpf, email } = dto;
-
     try {
+      await validateOrReject(dto);
+
+      const { cpf, email } = dto;
+
       const customerAlreadyExists =
         await this.customerRepository.findExistingCustomer(cpf, email);
 
       if (customerAlreadyExists) {
         this.exceptionService.badRequestException({
           message: 'Customer already exists with this cpf or email',
-          code: 400,
+          code: 409,
         });
       }
+
       const customer = this.customerMapper.mapFrom(dto);
 
       return this.customerRepository.create(customer);

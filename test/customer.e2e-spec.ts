@@ -53,4 +53,58 @@ describe('AppController (e2e)', () => {
     expect(response.body.email).toBe('john@example.com');
     expect(response.body.cpf).toBe('12345678900');
   });
+
+  it('/customers (POST) - Missing required fields', async () => {
+    // Arrange
+    const customerData = {
+      email: 'john@example.com',
+    };
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post('/customers')
+      .send(customerData);
+
+    // Assert
+    expect(response.status).toBe(400);
+    expect(response.body.message).toContain('name should not be empty');
+    expect(response.body.message).toContain('CPF should not be empty');
+  });
+
+  it('/customers (POST) - Invalid email format', async () => {
+    // Arrange
+    const customerData = {
+      name: 'John Doe',
+      email: 'invalid-email',
+      cpf: '12345678900',
+    };
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post('/customers')
+      .send(customerData);
+
+    // Assert
+    expect(response.status).toBe(400);
+    expect(response.body.message).toContain('Email must be an email');
+  });
+
+  it('/customers (POST) - Duplicate CPF', async () => {
+    // Arrange
+    const customerData = {
+      name: 'John Doe',
+      email: 'john@example.com',
+      cpf: '12345678900',
+    };
+
+    // Act
+    await request(app.getHttpServer()).post('/customers').send(customerData);
+    const response = await request(app.getHttpServer())
+      .post('/customers')
+      .send(customerData);
+
+    // Assert
+    expect(response.status).toBe(409);
+    expect(response.body.message).toContain('CPF already exists');
+  });
 });
