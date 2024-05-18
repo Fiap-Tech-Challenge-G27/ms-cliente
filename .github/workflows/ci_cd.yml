@@ -81,5 +81,5 @@ jobs:
         run: |
           kubectl apply -f kubernetes/secretproviderclass.yaml
           kubectl apply -f kubernetes/ms-cliente-deployment.yaml
-          kubectl apply -f kubernetes/ms-cliente-service.yml
+          kubectl apply -f kubernetes/ms-cliente-service.yaml
 
