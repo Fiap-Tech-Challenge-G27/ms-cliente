@@ -30,32 +30,10 @@ spec:
             initialDelaySeconds: 60
             periodSeconds: 10
           env:
-            - name: DATABASE_DIALECT
-              value: 'mongodb'
-            - name: MONGO_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: documentdbcredentials
-                  key: endpoint
-            - name: MONGO_PORT
-              valueFrom:
-                secretKeyRef:
-                  name: documentdbcredentials
-                  key: port
-            - name: MONGO_USER
-              valueFrom:
-                secretKeyRef:
-                  name: documentdbcredentials
-                  key: username
-            - name: MONGO_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: documentdbcredentials
-                  key: password
             - name: MONGO_URL
               valueFrom:
                 secretKeyRef:
-                  name: documentdbcredentials
+                  name: documentdb-secret
                   key: urlCustomers
           volumeMounts:
             - name: secrets-store-inline
