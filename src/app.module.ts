@@ -15,6 +15,7 @@ import configuration from './shared/configs/configuration';
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('mongoUri'),
+        retryWrites: false,
       }),
       inject: [ConfigService],
     }),
