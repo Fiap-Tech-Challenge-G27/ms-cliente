@@ -89,7 +89,8 @@
       "!**/infrastructure/dtos/*.ts",
       "!**/*.entity.ts",
       "!**/*.model.ts",
-      "!**/*.interface.ts"
+      "!**/*.interface.ts",
+      "!**/shared/configs/*.ts"
     ],
     "coveragePathIgnorePatterns": [
       "/node_modules/"

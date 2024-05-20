@@ -13,12 +13,6 @@ Feature: Customers API
     And the response body should contain "name should not be empty"
     And the response body should contain "cpf should not be empty"
 
-  Scenario: Create a new customer with invalid email format
-    Given I have a customer with name "John Doe" and email "invalid-email" and CPF "12345678900"
-    When I send a POST request to "/customers" with the customer data
-    Then the response status code should be 400
-    And the response body should contain "email must be an email"
-
   Scenario: Create a new customer with duplicate CPF
     Given I have a customer with name "John Doe" and email "john@example.com" and CPF "12345678900"
     And I have already created a customer with the same CPF

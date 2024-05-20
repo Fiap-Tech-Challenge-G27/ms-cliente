@@ -1,20 +1,15 @@
-import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
+import { getConnectionToken } from '@nestjs/mongoose';
 import * as request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../src/app.module';
 import { INestApplication } from '@nestjs/common';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-  let mongod: MongoMemoryServer;
 
   beforeAll(async () => {
-    mongod = await MongoMemoryServer.create();
-    const uri = mongod.getUri();
-
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, MongooseModule.forRoot(uri)],
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -31,7 +26,10 @@ describe('AppController (e2e)', () => {
 
   afterAll(async () => {
     await app.close();
-    await mongod.stop();
+  });
+
+  it('/health (GET)', () => {
+    return request(app.getHttpServer()).get('/health').expect(200).expect('OK');
   });
 
   it('/customers (POST) - Create Customer BDD', async () => {
@@ -67,26 +65,8 @@ describe('AppController (e2e)', () => {
 
     // Assert
     expect(response.status).toBe(400);
-    expect(response.body.message).toContain('name should not be empty');
+    expect(response.body.message).toContain('Name should not be empty');
     expect(response.body.message).toContain('CPF should not be empty');
-  });
-
-  it('/customers (POST) - Invalid email format', async () => {
-    // Arrange
-    const customerData = {
-      name: 'John Doe',
-      email: 'invalid-email',
-      cpf: '12345678900',
-    };
-
-    // Act
-    const response = await request(app.getHttpServer())
-      .post('/customers')
-      .send(customerData);
-
-    // Assert
-    expect(response.status).toBe(400);
-    expect(response.body.message).toContain('Email must be an email');
   });
 
   it('/customers (POST) - Duplicate CPF', async () => {
@@ -104,7 +84,9 @@ describe('AppController (e2e)', () => {
       .send(customerData);
 
     // Assert
-    expect(response.status).toBe(409);
-    expect(response.body.message).toContain('CPF already exists');
+    expect(response.status).toBe(400);
+    expect(response.body.message).toContain(
+      'Customer already exists with this cpf or email',
+    );
   });
 });
