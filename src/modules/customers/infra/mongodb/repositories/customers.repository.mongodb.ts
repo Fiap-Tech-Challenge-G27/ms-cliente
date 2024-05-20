@@ -55,7 +55,7 @@ export class CustomerRepositoryMongoDB implements ICustomerRepository {
 
   private transformCustomer(customer: Customer): CustomerEntity {
     return {
-      id: customer._id,
+      id: (customer?._id as string) || (customer?.id as string) || '',
       name: customer.name,
       email: customer.email,
       cpf: customer.cpf,
