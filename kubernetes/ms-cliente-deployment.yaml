@@ -29,18 +29,14 @@ spec:
               port: 3000
             initialDelaySeconds: 60
             periodSeconds: 10
-          volumeMounts:
-          - name: secrets-store-inline
-            mountPath: "/mnt/secrets-store"
-            readOnly: true
           env:
             - name: DATABASE_DIALECT
               value: 'mongodb'
             - name: MONGO_HOST
               valueFrom:
                 secretKeyRef:
-                  name: documentdbcredentials  # Nome do Kubernetes Secret onde os segredos estão armazenados
-                  key: endpoint  # Chave do segredo correspondente no AWS Secrets Manager
+                  name: documentdbcredentials
+                  key: endpoint
             - name: MONGO_PORT
               valueFrom:
                 secretKeyRef:
@@ -60,15 +56,18 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: documentdbcredentials
-                  key: url
+                  key: urlCustomers
+          volumeMounts:
+            - name: secrets-store-inline
+              mountPath: "/mnt/secrets-store"
+              readOnly: true
       volumes:
         - name: secrets-store-inline
           csi:
             driver: secrets-store.csi.k8s.io
             readOnly: true
             volumeAttributes:
-              secretProviderClass: "aws-secrets"  # O nome do seu SecretProviderClass
-      restartPolicy: Always
+              secretProviderClass: "aws-secrets-ms-cliente"  # Nome do seu SecretProviderClass
 ---
 apiVersion: autoscaling/v1
 kind: HorizontalPodAutoscaler
@@ -82,10 +81,3 @@ spec:
   minReplicas: 1
   maxReplicas: 10
   targetCPUUtilizationPercentage: 80
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: irsasecrets
-  annotations:
-    eks.amazonaws.com/role-arn: "arn:aws:iam::851725345801:role/roleNodeSecrets"
