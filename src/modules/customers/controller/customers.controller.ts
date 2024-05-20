@@ -6,6 +6,8 @@ import {
   Get,
   Patch,
   Delete,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 
 import { ApiTags } from '@nestjs/swagger';
@@ -14,6 +16,7 @@ import { CreateCustomerDto } from '../app/create-customer/create-customer.dto';
 import { UpdateCustomerDto } from '../app/update-customer/update-customer.dto';
 
 @ApiTags('customers')
+@UsePipes(new ValidationPipe())
 @Controller('customers')
 export class CustomersController {
   constructor(private readonly customerService: CustomerService) {}

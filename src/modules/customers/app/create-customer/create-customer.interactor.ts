@@ -17,24 +17,18 @@ export class CreateCustomerInteractor {
   async execute(dto: CreateCustomerDto): Promise<Customer> {
     const { cpf, email } = dto;
 
-    try {
-      const customerAlreadyExists =
-        await this.customerRepository.findExistingCustomer(cpf, email);
+    const customerAlreadyExists =
+      await this.customerRepository.findExistingCustomer(cpf, email);
 
-      if (customerAlreadyExists) {
-        this.exceptionService.badRequestException({
-          message: 'Customer already exists with this cpf or email',
-          code: 400,
-        });
-      }
-      const customer = this.customerMapper.mapFrom(dto);
-
-      return this.customerRepository.create(customer);
-    } catch (error) {
-      this.exceptionService.internalServerErrorException({
-        message: 'Error to create a customer',
-        code: 500,
+    if (customerAlreadyExists) {
+      this.exceptionService.badRequestException({
+        message: 'Customer already exists with this cpf or email',
+        code: 409,
       });
     }
+
+    const customer = this.customerMapper.mapFrom(dto);
+
+    return this.customerRepository.create(customer);
   }
 }

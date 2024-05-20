@@ -1,20 +1,15 @@
-import { MongooseModule, getConnectionToken } from '@nestjs/mongoose';
+import { getConnectionToken } from '@nestjs/mongoose';
 import * as request from 'supertest';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AppModule } from '../src/app.module';
 import { INestApplication } from '@nestjs/common';
-import { MongoMemoryServer } from 'mongodb-memory-server';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
-  let mongod: MongoMemoryServer;
 
   beforeAll(async () => {
-    mongod = await MongoMemoryServer.create();
-    const uri = mongod.getUri();
-
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [AppModule, MongooseModule.forRoot(uri)],
+      imports: [AppModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
@@ -31,7 +26,10 @@ describe('AppController (e2e)', () => {
 
   afterAll(async () => {
     await app.close();
-    await mongod.stop();
+  });
+
+  it('/health (GET)', () => {
+    return request(app.getHttpServer()).get('/health').expect(200).expect('OK');
   });
 
   it('/customers (POST) - Create Customer BDD', async () => {
@@ -52,5 +50,43 @@ describe('AppController (e2e)', () => {
     expect(response.body.name).toBe('John Doe');
     expect(response.body.email).toBe('john@example.com');
     expect(response.body.cpf).toBe('12345678900');
+  });
+
+  it('/customers (POST) - Missing required fields', async () => {
+    // Arrange
+    const customerData = {
+      email: 'john@example.com',
+    };
+
+    // Act
+    const response = await request(app.getHttpServer())
+      .post('/customers')
+      .send(customerData);
+
+    // Assert
+    expect(response.status).toBe(400);
+    expect(response.body.message).toContain('Name should not be empty');
+    expect(response.body.message).toContain('CPF should not be empty');
+  });
+
+  it('/customers (POST) - Duplicate CPF', async () => {
+    // Arrange
+    const customerData = {
+      name: 'John Doe',
+      email: 'john@example.com',
+      cpf: '12345678900',
+    };
+
+    // Act
+    await request(app.getHttpServer()).post('/customers').send(customerData);
+    const response = await request(app.getHttpServer())
+      .post('/customers')
+      .send(customerData);
+
+    // Assert
+    expect(response.status).toBe(400);
+    expect(response.body.message).toContain(
+      'Customer already exists with this cpf or email',
+    );
   });
 });

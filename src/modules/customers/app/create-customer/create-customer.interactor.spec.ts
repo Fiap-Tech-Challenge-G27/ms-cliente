@@ -82,28 +82,7 @@ describe('CreateCustomerInteractor', () => {
 
       expect(exceptionService.badRequestException).toHaveBeenCalledWith({
         message: 'Customer already exists with this cpf or email',
-        code: 400,
-      });
-    });
-
-    it('should throw internal server error exception on repository error', async () => {
-      const createDto: CreateCustomerDto = {
-        name: 'John Doe',
-        email: 'john@example.com',
-        cpf: '12345678900',
-      };
-
-      (
-        customerRepository.findExistingCustomer as jest.Mock
-      ).mockRejectedValueOnce(new Error('Repository error'));
-
-      await expect(interactor.execute(createDto)).resolves.toBeUndefined();
-
-      expect(
-        exceptionService.internalServerErrorException,
-      ).toHaveBeenCalledWith({
-        message: 'Error to create a customer',
-        code: 500,
+        code: 409,
       });
     });
   });
