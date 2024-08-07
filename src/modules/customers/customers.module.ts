@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, MiddlewareConsumer } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import {
   Customer,
@@ -16,6 +16,7 @@ import { UpdateCustomerInteractor } from './app/update-customer/update-customer.
 import { RemoveCustomerInteractor } from './app/remove-customer/remove-customer.interactor';
 import { FindCustomerInteractor } from './app/find-customer/find-customer.interactor';
 import { FindAllCustomersInteractor } from './app/find-all-customers/find-all-customers.interactor';
+import { SNSConfirmationMiddleware } from 'src/shared/sns/SNSConfirmationMiddleware';
 
 @Module({
   imports: [
@@ -43,4 +44,9 @@ import { FindAllCustomersInteractor } from './app/find-all-customers/find-all-cu
     CustomerMapper,
   ],
 })
-export class CustomersModule {}
+export class CustomersModule {  
+  configure(consumer: MiddlewareConsumer) {
+  consumer
+    .apply(SNSConfirmationMiddleware)
+    .forRoutes('customers/notification');
+}}

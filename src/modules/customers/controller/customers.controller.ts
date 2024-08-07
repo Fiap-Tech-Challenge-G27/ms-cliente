@@ -26,6 +26,12 @@ export class CustomersController {
     return this.customerService.createCustomer(createCustomerDto);
   }
 
+  
+  @Post('notification')
+  notifyCustomer(@Body() body: string) {
+    console.log(body);
+  }
+
   @Get()
   findAll() {
     return this.customerService.findAllCustomers();
