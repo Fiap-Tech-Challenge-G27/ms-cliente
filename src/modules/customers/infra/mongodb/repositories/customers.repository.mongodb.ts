@@ -59,6 +59,8 @@ export class CustomerRepositoryMongoDB implements ICustomerRepository {
       name: customer.name,
       email: customer.email,
       cpf: customer.cpf,
+      phone: customer.phone,
+      address: customer.address,
       createdAt: customer.createdAt,
       updatedAt: customer.updatedAt,
     };
