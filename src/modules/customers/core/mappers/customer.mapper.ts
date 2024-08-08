@@ -9,7 +9,7 @@ export class CustomerMapper extends Mapper<
   CustomerEntity
 > {
   mapFrom(param: CreateCustomerDto | UpdateCustomerDto): CustomerEntity {
-    const customer = new CustomerEntity(param.name, param.email, param.cpf);
+    const customer = new CustomerEntity(param.name, param.email, param.cpf, param.address, param.phone);
     return customer;
   }
 }

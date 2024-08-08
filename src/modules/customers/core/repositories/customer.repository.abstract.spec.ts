@@ -33,6 +33,8 @@ describe('ICustomerRepository', () => {
         name: 'John Doe',
         email: 'john@example.com',
         cpf: '12345678900',
+        address: "Rua ABC",
+        phone: "11987654321"
       };
     }
   }
@@ -54,6 +56,8 @@ describe('ICustomerRepository', () => {
       name: 'John Doe',
       email: 'john@example.com',
       cpf: '12345678900',
+      address: "Rua ABC",
+      phone: "11987654321"
     });
   });
 });

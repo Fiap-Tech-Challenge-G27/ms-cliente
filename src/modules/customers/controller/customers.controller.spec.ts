@@ -39,6 +39,8 @@ describe('CustomersController', () => {
         name: 'John Doe',
         email: 'john@example.com',
         cpf: '12345678900',
+        address: "Rua ABC",
+        phone: "11987654321"
       };
       controller.create(createDto);
       expect(customerService.createCustomer).toHaveBeenCalledWith(createDto);

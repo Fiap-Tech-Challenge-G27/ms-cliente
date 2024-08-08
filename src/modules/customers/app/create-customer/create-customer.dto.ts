@@ -17,4 +17,15 @@ export class CreateCustomerDto {
   @IsString()
   @Length(11, 11, { message: 'CPF must be exactly 11 characters' })
   readonly cpf: string;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'Phone should not be empty' })
+  @IsString()
+  readonly phone: string;
+
+  @ApiProperty()
+  @IsNotEmpty({ message: 'Address should not be empty' })
+  @IsString()
+  readonly address: string;
+
 }
