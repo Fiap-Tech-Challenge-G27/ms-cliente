@@ -12,6 +12,12 @@ export class Customer extends Document {
   @Prop({ required: true, unique: true })
   cpf: string;
 
+  @Prop({ required: true })
+  phone: string;
+
+  @Prop({ required: true })
+  address: string;
+
   @Prop({ default: Date.now })
   createdAt: Date;
 
